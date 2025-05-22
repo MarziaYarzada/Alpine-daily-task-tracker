@@ -1,202 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="//unpkg.com/alpinejs" defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-light: #6366f1;
-      --text: #1f2937;
-      --text-light: #6b7280;
-      --bg: #f3f4f6;
-      --card-bg: #ffffff;
-      --task-bg: #f9fafb;
-      --delete: #ef4444;
-    }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      padding: 2rem 1rem;
-      min-height: 100vh;
-    }
-    
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-    
-    h2 {
-      color: var(--primary);
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    
-    .welcome {
-      color: var(--text);
-      margin: 1rem 0;
-      font-size: 1.1rem;
-    }
-    
-    .welcome strong {
-      color: var(--primary);
-    }
-    
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
-      font-size: 1rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    
-    input:focus {
-      outline: none;
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-    
-    button {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      width: 100%;
-      font-size: 1rem;
-    }
-    
-    button:hover {
-      background-color: var(--primary-light);
-    }
-    
-    ul {
-      margin-top: 1.5rem;
-    }
-    
-    li {
-      background: var(--task-bg);
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    }
-    
-    .task-text {
-      flex-grow: 1;
-    }
-    
-    .delete-btn {
-      background: var(--delete);
-      color: white;
-      border: none;
-      width: auto;
-      padding: 0.5rem;
-      border-radius: 6px;
-      margin-left: 1rem;
-    }
-    
-    .delete-btn:hover {
-      background: #dc2626;
-    }
-    
-    .empty-state {
-      text-align: center;
-      color: var(--text-light);
-      padding: 2rem 0;
-    }
-    
-    @media (max-width: 500px) {
-      .card {
-        padding: 1.5rem;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #6366f1;
+        --text: #1f2937;
+        --text-light: #6b7280;
+        --bg: #f3f4f6;
+        --card-bg: #ffffff;
+        --task-bg: #f9fafb;
+        --delete: #ef4444;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="card" x-data="taskApp()">
-      <h2>Daily Task Tracker</h2>
 
-      <!-- Enter Name -->
-      <input 
-        x-model="name" 
-        placeholder="Enter your name"
-        @keyup.enter="focusTaskInput"
-        x-ref="nameInput"
-      >
-      +
-      <template x-if="name">
-        <p class="welcome">Hello <strong x-text="name"></strong>! What tasks do you have today?</p>
-      </template>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        padding: 2rem 1rem;
+        min-height: 100vh;
+      }
 
-      <!-- Add Task -->
-      <input 
-        x-model="newTask" 
-        placeholder="Add a new task"
-        @keyup.enter="addTask"
-        x-ref="taskInput"
-        :disabled="!name"
-      >
-      <button @click="addTask" :disabled="!name">Add Task</button>
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+      }
 
-      <!-- Task List -->
-      <ul>
-        <template x-for="(task, index) in tasks" :key="index">
-          <li>
-            <span class="task-text" x-text="task"></span>
-            <button class="delete-btn" @click="removeTask(index)">❌</button>
-          </li>
-        </template>
-        
-        <template x-if="tasks.length === 0 && name">
-          <li class="empty-state">No tasks yet. Add your first task above!</li>
-        </template>
-      </ul>
-    </div>
-  </div>
+      .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
 
-  <script>
-    function taskApp() {
-      return {
-        name: '',
-        newTask: '',
-        tasks: [],
-        focusTaskInput() {
-          this.$refs.taskInput.focus();
-        },
-        addTask() {
-          if (this.newTask.trim() && this.name) {
-            this.tasks.push(this.newTask.trim());
-            this.newTask = '';
-          }
-        },
-        removeTask(index) {
-          this.tasks.splice(index, 1);
+      h2 {
+        color: var(--primary);
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .welcome {
+        color: var(--text);
+        margin: 1rem 0;
+        font-size: 1.1rem;
+      }
+
+      .welcome strong {
+        color: var(--primary);
+      }
+
+      input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+
+      button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        width: 100%;
+        font-size: 1rem;
+      }
+
+      button:hover {
+        background-color: var(--primary-light);
+      }
+
+      ul {
+        margin-top: 1.5rem;
+      }
+
+      li {
+        background: var(--task-bg);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .task-text {
+        flex-grow: 1;
+      }
+
+      .delete-btn {
+        background: var(--delete);
+        color: white;
+        border: none;
+        width: auto;
+        padding: 0.5rem;
+        border-radius: 6px;
+        margin-left: 1rem;
+      }
+
+      .delete-btn:hover {
+        background: #dc2626;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--text-light);
+        padding: 2rem 0;
+      }
+
+      @media (max-width: 500px) {
+        .card {
+          padding: 1.5rem;
         }
       }
-    }
-  </script>
-</body>
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card" x-data="taskApp()" x-init="init()">
+        <h2>Daily Task Tracker</h2>
+
+        <!-- Enter Name -->
+        <input
+          x-model="name"
+          placeholder="Enter your name"
+          @keyup.enter="focusTaskInput"
+          x-ref="nameInput"
+        />
+
+        <template x-if="name">
+          <p class="welcome" x-text="greeting"></p>
+        </template>
+
+        <!-- Add Task -->
+        <input
+          x-model="newTask"
+          placeholder="Add a new task"
+          @keyup.enter="addTask"
+          x-ref="taskInput"
+          :disabled="!name"
+        />
+        <button @click="addTask" :disabled="!name">Add Task</button>
+        <p
+          x-effect="console.log(tasks.length)"
+          x-show="tasks.length > 3"
+          style="color: red; margin-top: 1rem"
+        >
+          ⚠️ You have too many tasks! Don't forget to take a break.
+        </p>
+
+        <!-- Task List -->
+        <ul>
+          <template x-for="(task, index) in tasks" :key="index">
+            <li>
+              <span class="task-text" x-text="task"></span>
+              <button class="delete-btn" @click="removeTask(index)">❌</button>
+            </li>
+          </template>
+
+          <template x-if="tasks.length === 0 && name">
+            <li class="empty-state">
+              No tasks yet. Add your first task above!
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      function taskApp() {
+        return {
+          name: "",
+          newTask: "",
+          tasks: [],
+          init() {
+            this.$refs.nameInput.focus();
+            const saved = localStorage.getItem("tasks");
+            if (saved) {
+              this.tasks = JSON.parse(saved);
+            }
+            this.$watch("tasks", (val) =>
+              localStorage.setItem("tasks", JSON.stringify(val))
+            );
+          },
+          get greeting() {
+            return `Hello ${this.name}! What tasks do you have today?`;
+          },
+          focusTaskInput() {
+            this.$refs.taskInput.focus();
+          },
+          addTask() {
+            if (!this.name) return;
+
+            if (this.tasks.length >= 3) {
+              alert(
+                "⚠️ You can only have 3 tasks at a time. Please complete or delete a task first."
+              );
+              return;
+            }
+
+            if (this.newTask.trim()) {
+              this.tasks.push(this.newTask.trim());
+              this.newTask = "";
+              this.focusTaskInput();
+            }
+          },
+          removeTask(index) {
+            this.tasks.splice(index, 1);
+          },
+        };
+      }
+    </script>
+  </body>
 </html>
